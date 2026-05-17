@@ -55,7 +55,7 @@ acc_manual = (np.sign(scores) == y_s).mean()
 print(f"600-602 Ручной AdaBoost-M1 (T={T} stumps): accuracy={acc_manual:.3f}")
 
 # === 601: SAMME через sklearn ===
-clf = AdaBoostClassifier(n_estimators=20, algorithm="SAMME", random_state=0)
+clf = AdaBoostClassifier(n_estimators=20, random_state=0)  # SAMME — default в новых sklearn
 clf.fit(X, y)
 print(f"601 sklearn AdaBoost SAMME: accuracy={clf.score(X, y):.3f}")
 
