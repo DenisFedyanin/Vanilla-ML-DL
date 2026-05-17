@@ -20,9 +20,10 @@ from sklearn.datasets import load_digits
 
 rng = np.random.default_rng(0)
 
-# === 645: Factor Analysis на digits ===
-X, _ = load_digits(return_X_y=True)
-fa = FactorAnalysis(n_components=5, random_state=0).fit(X)
+# === 645: Factor Analysis на digits (берём только 300 объектов для скорости) ===
+X_full, _ = load_digits(return_X_y=True)
+X = X_full[:300]
+fa = FactorAnalysis(n_components=5, random_state=0, max_iter=100).fit(X)
 print(f"645 FactorAnalysis: explained noise_variance[:5]="
       f"{fa.noise_variance_[:5].round(2).tolist()}, "
       f"components shape={fa.components_.shape}")
