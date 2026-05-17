@@ -28,7 +28,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import Ridge
 
 rng = np.random.default_rng(0)
-X, y = make_classification(n_samples=400, n_features=5, n_informative=4, random_state=0)
+X, y = make_classification(n_samples=400, n_features=5, n_informative=3,
+                           n_redundant=1, n_repeated=0, random_state=0)
 clf = RandomForestClassifier(n_estimators=80, random_state=0).fit(X, y)
 
 x0 = X[0]
@@ -51,17 +52,19 @@ print(f"LIME coef (вклад каждой фичи): {surrogate.coef_.round(3)}
 baseline = X.mean(axis=0)
 M = X.shape[1]
 shap = np.zeros(M)
-S = 200  # сэмплов масок
+S = 50  # сэмплов масок
 for _ in range(S):
     mask = rng.integers(0, 2, size=M).astype(bool)
+    # Соберём батч из 2*M точек (для каждой фичи: in и out) и сделаем один predict
+    batch = np.tile(baseline, (2 * M, 1))
     for j in range(M):
-        # вклад фичи j: f с маской∪{j} минус f с маской\{j}
         m_in = mask.copy(); m_in[j] = True
         m_out = mask.copy(); m_out[j] = False
-        x_in = np.where(m_in, x0, baseline)
-        x_out = np.where(m_out, x0, baseline)
-        shap[j] += clf.predict_proba(x_in.reshape(1, -1))[0, 1] - \
-                   clf.predict_proba(x_out.reshape(1, -1))[0, 1]
+        batch[2 * j]     = np.where(m_in, x0, baseline)
+        batch[2 * j + 1] = np.where(m_out, x0, baseline)
+    probs = clf.predict_proba(batch)[:, 1]
+    for j in range(M):
+        shap[j] += probs[2 * j] - probs[2 * j + 1]
 shap /= S
 print(f"SHAP вклад  (KernelSHAP-like): {shap.round(3)}")
 print(f"Сумма SHAP ≈ f(x0) - E[f] = {shap.sum():.3f} vs {p0 - clf.predict_proba(baseline.reshape(1,-1))[0,1]:.3f}")

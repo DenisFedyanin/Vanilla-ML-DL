@@ -32,10 +32,12 @@ for i in range(2, T):
 
 # === AR(p) через lstsq ===
 def fit_ar(x, p):
+    n = len(x)
     Y = x[p:]
-    X = np.column_stack([np.ones_like(Y)] + [x[p - j - 1: -j - 1 if j + 1 != 0 else None] for j in range(p)])
-    # Точнее построим вручную:
-    X = np.column_stack([np.ones_like(Y)] + [x[p - j - 1:T - j - 1] for j in range(p)])
+    cols = [np.ones_like(Y)]
+    for j in range(p):
+        cols.append(x[p - j - 1:n - j - 1])
+    X = np.column_stack(cols)
     beta, *_ = np.linalg.lstsq(X, Y, rcond=None)
     return beta
 

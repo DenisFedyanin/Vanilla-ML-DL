@@ -48,7 +48,7 @@ print(f"646 ICA восстановила 3 источника, лучшие ко
 
 # === 647: NMF (с неотрицательными данными) ===
 X_pos = np.abs(X)  # digits и так >=0
-nmf = NMF(n_components=5, init="nndsvd", max_iter=200, random_state=0).fit(X_pos)
+nmf = NMF(n_components=5, init="nndsvd", max_iter=100, random_state=0).fit(X_pos)
 W = nmf.transform(X_pos)
 H = nmf.components_
 err = np.linalg.norm(X_pos - W @ H) / np.linalg.norm(X_pos)

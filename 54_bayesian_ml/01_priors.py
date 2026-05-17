@@ -67,7 +67,8 @@ print(f"MAP theta = {map_:.3f}")
 # Evidence = p(D) = integral. Для conjugate Beta-Binomial:
 # p(D) = C(n,k) * B(a+k, b+n-k) / B(a, b). Покажем как сетка.
 prior = np.exp(beta_logpdf(grid, a_prior, b_prior))
-prior = prior / np.trapz(prior, grid)
+dx = grid[1] - grid[0]
+prior = prior / (prior.sum() * dx)
 like = grid ** k * (1 - grid) ** (n_data - k)
-evidence = np.trapz(like * prior, grid)
+evidence = (like * prior).sum() * dx
 print(f"Evidence p(D) ≈ {evidence:.4e}  (нормировка posterior)")

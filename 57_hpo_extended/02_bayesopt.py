@@ -21,6 +21,7 @@ PI(x) = P(f(x) < f_best). Простая, но склонна к чрезмер�
 1) Фитуем GP на (X,y). 2) Максимизируем acquisition на сетке/случайных точках.
 3) Вычисляем f в новой точке. 4) Повторяем.
 """
+import math
 import numpy as np
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel
@@ -33,7 +34,7 @@ X_grid = np.linspace(0, 2, 200).reshape(-1, 1)
 
 # Стандартный нормальный PDF/CDF без scipy
 norm_pdf = lambda z: np.exp(-0.5 * z * z) / np.sqrt(2 * np.pi)
-norm_cdf = lambda z: 0.5 * (1.0 + np.vectorize(lambda v: np.math.erf(v / np.sqrt(2)))(z))
+norm_cdf = lambda z: 0.5 * (1.0 + np.vectorize(lambda v: math.erf(v / np.sqrt(2)))(z))
 
 def ei(mu, sigma, y_best, xi=0.01):
     sigma = np.maximum(sigma, 1e-9)

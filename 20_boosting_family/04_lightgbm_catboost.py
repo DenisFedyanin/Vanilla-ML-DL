@@ -36,9 +36,9 @@ from sklearn.ensemble import HistGradientBoostingClassifier, GradientBoostingCla
 rng = np.random.default_rng(0)
 
 # === 615: HistGB vs обычный GB ===
-X, y = make_classification(n_samples=2000, n_features=10, random_state=0)
-hgb = HistGradientBoostingClassifier(max_iter=50, random_state=0).fit(X, y)
-gb = GradientBoostingClassifier(n_estimators=50, random_state=0).fit(X, y)
+X, y = make_classification(n_samples=800, n_features=10, random_state=0)
+hgb = HistGradientBoostingClassifier(max_iter=30, random_state=0).fit(X, y)
+gb = GradientBoostingClassifier(n_estimators=30, random_state=0).fit(X, y)
 print(f"615 HistGB acc={hgb.score(X, y):.3f}, обычный GB acc={gb.score(X, y):.3f}")
 
 # === 616: имитация GOSS ===
